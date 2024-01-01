@@ -1,0 +1,90 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from numpy.random import default_rng
+
+
+def curve_fit(data: list, attribute: str, degree: int) -> str:
+    """
+    This function takes three input parameters: (1) a list of dictionaries, (2) a string, and (3) an integer. 
+    Assume all dictionaries contain "M_AVG"
+
+    The string indicates the attribute to which the average main memory will be compared
+
+    integer represents degree of polynomial to be fitted to the data, 1 to 5 inclusive
+
+    returns string representation of equation of best fit for average of M_AVG
+
+    y = 3x^2 + x + 1
+
+    """
+
+    attribute_list = []
+    attribute_set = ()
+    machine_list = []
+
+    for i in data:
+        value = i[attribute]
+
+        attribute_list.append(value)
+
+        machine_list.append(i['M_AVG'])
+
+    attribute_set = set(attribute_list)
+
+    avg_m_avg_list = []
+    for i in range(len(attribute_list)):
+        avg_total = 0
+        avg_length = 0
+        for j in attribute_set:
+            if attribute_list[i] == j:
+                avg_length += 1
+                avg_total += machine_list[i]
+        avg_m_avg_list.append([attribute_list[i], (avg_total / avg_length)])
+
+    average = 0
+
+    machine_dict = {}
+    for i in avg_m_avg_list:
+        index_sum = 0
+        matching_indices = []
+
+        for j in avg_m_avg_list:
+            if j[0] == i[0]:
+                matching_indices.append(avg_m_avg_list.index(j))
+
+        for n in matching_indices:
+            index_sum += avg_m_avg_list[n][1]
+
+        machine_dict[i[0]] = round((index_sum / len(matching_indices)), 2)
+
+    x_list = []
+    y_list = []
+
+    for i in machine_dict:
+        x_list.append(int(i))
+        y_list.append(int(machine_dict[i]))
+
+    x_value = np.array(x_list)
+
+    y_value = np.array(y_list)
+
+    if degree > len(x_value) - 1:
+        coeff = np.polyfit(x_value, y_value, len(x_value) - 1)
+    else:
+        coeff = np.polyfit(x_value, y_value, degree)
+
+    equation = "y = "
+
+    for i in range(len(coeff)):
+        power = len(coeff) - i - 1
+        coeff_val = str(round(coeff[i], 2))
+
+        if power > 1:
+            equation += coeff_val + 'x^' + str(power) + ' + '
+        elif power == 1:
+            equation += coeff_val + 'x + '
+        else:
+            equation += coeff_val
+
+    return equation
+
