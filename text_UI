@@ -1,0 +1,98 @@
+from load_data import *
+
+from sort import *
+
+from curve_fit import *
+
+from histogram import *
+
+
+def text_ui():
+    
+    file = None
+    
+    while True:
+        
+        print('The available commands are:\n  L)oad Data\n  S)ort Data\n  C)urve Fit\n  H)istogram\n  E)xit\n')
+        command = input('Please type your command: ')
+        
+        if command.upper() == 'L':
+            file = input('Please enter the name of the file: ')
+            while True:
+                attribute = input('Please enter the attribute to use as a filter: ')
+                if attribute.upper() != 'ALL' and attribute.upper() != 'VENDOR' and attribute.upper() != 'MODEL' and attribute.upper() != 'CACH' and attribute.upper() != 'PRP':
+                    print('Attribute is invalid.')
+                else:
+                    break
+                    
+            if attribute.upper() == 'ALL':
+                value = 0
+            elif attribute.upper() == 'VENDOR' or attribute.upper() == 'MODEL':
+                value = input('Please enter the value of the attribute: ')
+            else:
+                value = int(input('Please enter the value of the attribute: '))
+            
+            lst = add_average_main_memory(load_data(file, (attribute, value)))
+            print('Data loaded.')
+                        
+        elif command.upper() == 'S':
+            if file == None:
+                print('File not loaded. Please, load a file first.')
+                continue
+            
+            while True:
+                attribute = input("Please enter the attribute you want to use for sorting:\n'CACH', 'PRP', 'M_AVG', 'MYCT':\n")
+                if attribute.upper() != 'M_AVG' and attribute.upper() != 'MYCT' and attribute.upper() != 'CACH' and attribute.upper() != 'PRP':
+                    print('Attribute is invalid.')
+                else:
+                    break
+            
+            order = input('Ascending (A) or Descending (D) order: ')
+            
+            sorted_lst = sort(lst, order.upper(), attribute.upper())
+                        
+            yes_no = input('Data Sorted. Do you want to display the data? Y or N: ')
+            
+            if yes_no.upper() == 'Y':
+                print(sorted_lst)
+                
+        elif command.upper() == 'C':
+            if file == None:
+                print('File not loaded. Please, load a file first.')
+                continue
+            
+            while True:
+                attribute = input('Please enter the attribute you want to use to find the best fit for M_AVG: ')
+                if attribute.upper() != 'CACH' and attribute.upper() != 'PRP':
+                    print('Attribute is invalid.')
+                else:
+                    break
+            
+            order = int(input('Please enter the order of the polynomial to be fitted (1 to 5 inclusive): '))
+            
+            print(curve_fit(lst, attribute, order))
+        
+        elif command.upper() == 'H':
+            if file == None:
+                print('File not loaded. Please, load a file first.')
+                continue
+            
+            while True:
+                attribute = input('Please enter the attribute you want to use for plotting: ')
+                if attribute.upper() != 'VENDOR' and attribute.upper() != 'MODEL' and attribute.upper() != 'CACH' and attribute.upper() != 'PRP':
+                    print('Attribute is invalid.')
+                else:
+                    break
+                
+            print(histogram(lst, attribute))
+        
+        elif command.upper() == 'E':
+            break
+            
+        else:
+            print('Invalid command.')
+
+
+# Main script
+
+text_ui()
