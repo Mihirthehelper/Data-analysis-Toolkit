@@ -1,0 +1,47 @@
+def histogram(data, attribute):
+    # Check if the attribute is categorical
+    is_categorical = attribute in ['Vendor', 'Model']
+
+    # Extract values for the specified attribute
+    values = [entry[attribute] for entry in data]
+
+    # Check if the attribute is numerical
+    if isinstance(values[0], (int, float)):
+        # Define 20 intervals between 0 and the maximum value
+        intervals = np.linspace(0, max(values), 21)
+
+        if not is_categorical:
+            # Plot histogram using plt.bar
+            plt.bar(intervals[:-1], np.histogram(values, bins=intervals)[0], width=intervals[1]-intervals[0], edgecolor='black')
+            plt.xlabel(attribute)
+            plt.ylabel('Number of Machines')
+            plt.title(f'Histogram of {attribute}')
+
+            # Display the plot
+            plt.show()
+        else:
+            print("Categorical attribute. Cannot plot histogram.")
+            # Explicit calls for categorical attributes
+            plt.figure()  # Add this line for categorical attributes
+            plt.xlabel(attribute)
+            plt.ylabel('Number of Machines')
+            plt.title(f'Histogram of {attribute}')
+            plt.bar(list(set(values)), [values.count(val) for val in set(values)], edgecolor='black')
+            plt.show()
+
+            # Return a distinctive value for categorical attributes
+            return -1
+    else:
+        print("Categorical attribute. Cannot plot histogram.")
+        # Explicit calls for categorical attributes
+        plt.figure()  # Add this line for categorical attributes
+        plt.xlabel(attribute)
+        plt.ylabel('Number of Machines')
+        plt.title(f'Histogram of {attribute}')
+        plt.bar(list(set(values)), [values.count(val) for val in set(values)], edgecolor='black')
+        plt.show()
+
+        # Return a distinctive value for categorical attributes
+        return -1
+
+    return max(values)
