@@ -1,0 +1,162 @@
+def sort_cache_bubble(list_dict: list, a_or_d: str) -> list:
+    """
+    Returns a list of the machines' dictionaries sorted by the 'CACH' attribute.
+
+    The second parameter of the function is a string 'A' or 'D' which determines
+    if the machines will be sorted in ascending or descending order.
+
+    If 'CACH' is not a key in the dictionary, the function returns the original list.
+
+    >>> sort_cache_bubble([{"CACH":10,"Model":"GP"},{"CACH":19,"Model":"MS"}], "D")
+    [{"CACH": 19, "Model":"MS"}, {"CACH":10, "Model":"GP"}]
+
+    >>> sort_cache_bubble([{"Model":"GP"}, {"Model":"MS"}], "D")
+    'CACH' key is not present.
+    [{"Model":"GP"}, {" Model":"MS"}]
+
+    >>> sort_cache_bubble([], 'A')
+    []
+
+    """
+
+    for i in range(len(list_dict)):
+
+        if list_dict[i].get('CACH') == None:
+            print("'CACH' key is not present.")
+            return list_dict
+
+        else:
+
+            for j in range(0, len(list_dict) - i - 1):
+
+                if a_or_d == 'A' or a_or_d == 'a':
+
+                    if list_dict[j]['CACH'] > list_dict[j + 1]['CACH']:
+
+                        list_dict[j], list_dict[j +
+                                                1] = list_dict[j + 1], list_dict[j]
+
+                elif a_or_d == 'D' or a_or_d == 'd':
+
+                    if list_dict[j]['CACH'] < list_dict[j + 1]['CACH']:
+
+                        list_dict[j], list_dict[j +
+                                                1] = list_dict[j + 1], list_dict[j]
+
+    return list_dict
+
+
+#==========================================#
+# Place your sort_prp_selection function after this line
+def sort_prp_selection(machine_list: list[dict], order: str) -> list[dict]:
+    """
+    Sort a list of dictionaries based on the 'PRP' attribute using the selection sort algorithm.
+
+    Args:
+        machine_list (list[dict]): A list of dictionaries representing machines.
+        order (str): Sorting order, either 'A' for ascending or 'D' for descending.
+
+    Returns:
+        list[dict]: A sorted list of dictionaries based on the 'PRP' attribute.
+                    If 'PRP' is not a key in the dictionary, the original list is returned.
+    """
+    n = len(machine_list)
+
+    for i in range(n - 1):
+        # Find the index of the minimum/maximum element in the unsorted part
+        min_max_index = i
+        for j in range(i + 1, n):
+            if 'PRP' in machine_list[j] and 'PRP' in machine_list[min_max_index]:
+                if order == 'A':
+                    if machine_list[j]['PRP'] < machine_list[min_max_index]['PRP']:
+                        min_max_index = j
+                elif order == 'D':
+                    if machine_list[j]['PRP'] > machine_list[min_max_index]['PRP']:
+                        min_max_index = j
+
+        # Swap the found minimum/maximum element with the first element
+        machine_list[i], machine_list[min_max_index] = machine_list[min_max_index], machine_list[i]
+
+    return machine_list
+
+
+#==========================================#
+# Place your sort_m_avg_insertion function after this line
+def sort_m_avg_insertion(dictionary_list: list, order: str) -> None:
+    """
+    This function takes two input parameters: (1) a list of dictionaries and (2) a string (“A” or “D”) to determine if the students will be sorted in ascending or descending order.
+    """
+    if not dictionary_list:
+        return dictionary_list
+    if "M_AVG" not in dictionary_list[0]:
+        print('"M_AVG is not a key in the list of dicts"')
+        return dictionary_list
+    if order == "A":
+        for i in range(1, len(dictionary_list)):
+            key = dictionary_list[i]
+            j = i - 1
+            while j >= 0 and dictionary_list[j]["M_AVG"] > key["M_AVG"]:
+                dictionary_list[j + 1] = dictionary_list[j]
+                j -= 1
+            dictionary_list[j + 1] = key
+    if order == "D":
+        for i in range(1, len(dictionary_list)):
+            key = dictionary_list[i]
+            j = i - 1
+            while j >= 0 and dictionary_list[j]["M_AVG"] < key["M_AVG"]:
+                dictionary_list[j + 1] = dictionary_list[j]
+                j -= 1
+            dictionary_list[j + 1] = key
+    return dictionary_list
+
+
+#==========================================#
+# Place your sort_myct_bubble function after this line
+def sort_myct_bubble(arr: list, order: str):
+    key = 'MYCT'
+
+    for i in arr:
+        if key in i:
+            swap = True
+            while swap:
+                swap = False
+                for i in range(len(arr) - 1):
+                    if order == 'A':
+                        if arr[i]['MYCT'] > arr[i + 1]['MYCT']:
+                            aux = arr[i]
+                            arr[i] = arr[i + 1]
+                            arr[i + 1] = aux
+                            swap = True
+                    elif order == 'D':
+                        if arr[i]['MYCT'] < arr[i + 1]['MYCT']:
+                            aux = arr[i]
+                            arr[i] = arr[i + 1]
+                            arr[i + 1] = aux
+                            swap = True
+
+        elif key not in i:
+            print('"MYCT" not present')
+
+    return arr
+
+
+#==========================================#
+# Place your sort function after this line
+def sort(arr: list, order: str, key: str):
+    """return a sorted list in the order entered using the attribute parameter key.
+
+    >>>sort([{"CACH":10,"Model":"GP"},{"CACH":19.1,"Model":"MS"}],"D","CACH") [{"CACH": 19, "Model":"MS"}, {"CACH":10, "Model":"GP"}]
+    >>>sort([{"Model":"GP"},{"Model":"MS"}], "D", "Model") Cannot be sorted by "Model"
+        [{"Model":"GP"}, {"Model":"MS"}]
+    """
+    if key == 'CACH':
+        return sort_cache_bubble(arr, order)
+    elif key == 'PRP':
+        return sort_prp_selection(arr, order)
+    elif key == 'M_AVG':
+        return sort_m_avg_insertion(arr, order)
+    elif key == 'MYCT':
+        return sort_myct_bubble(arr, order)
+    else:
+        print('cannot be sorted by key')
+        return arr
